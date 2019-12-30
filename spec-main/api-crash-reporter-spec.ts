@@ -183,6 +183,24 @@ ifdescribe(!process.mas && !process.env.DISABLE_CRASH_REPORTER_TESTS && process.
     }
   })
 
+  describe('getUploadedReports', () => {
+    it('throws an error if start has not been called', () => {
+      expect(() => {
+        crashReporter.getUploadedReports()
+      }).to.throw(/crashReporter has not been started/)
+    })
+
+    it('returns an array of reports', () => {
+      crashReporter.start({
+        companyName: 'Umbrella Corporation',
+        submitURL: 'http://127.0.0.1/crash-me'
+      })
+
+      const reports = crashReporter.getUploadedReports()
+      expect(reports).to.be.an('array')
+    })
+  })
+
   describe('start(options)', () => {
     it('requires that the companyName and submitURL options be specified', () => {
       expect(() => {
@@ -212,13 +230,6 @@ ifdescribe(!process.mas && !process.env.DISABLE_CRASH_REPORTER_TESTS && process.
       const crashesDir = crashReporter.getCrashesDirectory()
       const dir = path.join(app.getPath('temp'), 'Electron Test Main Crashes')
       expect(crashesDir).to.equal(dir)
-    })
-  })
-
-  describe('getUploadedReports', () => {
-    it('returns an array of reports', () => {
-      const reports = crashReporter.getUploadedReports()
-      expect(reports).to.be.an('array')
     })
   })
 
